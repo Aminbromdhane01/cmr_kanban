@@ -1,6 +1,12 @@
 import { Box } from "@chakra-ui/react"
-import members from "../../utils/members"
+import useFetch from "../../hooks/useFetch"
+
 const User_table = () => {
+
+  const {data , error , loading} = useFetch('http://localhost:3333/api/users')
+  console.log(data);
+  
+  
   return (
     <div className="col-lg-12 grid-margin stretch-card">
     <div className="card" style={{borderRadius : '0px'}}>
@@ -22,12 +28,12 @@ const User_table = () => {
               </tr>
             </thead>
             <tbody>
-              {members.map(member =>(
+              {data?.map(member =>(
                <tr>
               <td  >
                           <img src={member.image} alt="user icon"  style={{width : '40px' , height: '40px' , borderRadius : '50px'}} />
             </td>
-            <td> {member.username} </td>
+            <td> {member.email} </td>
             <td>
                {member.production_line}
            </td>

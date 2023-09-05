@@ -16,6 +16,7 @@
     "@mui/icons-material": "^5.14.3",
     "@mui/x-data-grid": "^6.10.2",
     "@types/chart.js": "^2.9.37",
+    "axios": "^1.5.0",
     "bootstrap": "^5.3.1",
     "chart.js": "^4.3.3",
     "evergreen-ui": "^7.1.9",

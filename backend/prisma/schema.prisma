@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             Int     @id @default(autoincrement())
+  email          String  @unique
+  username       String
+  pwd            String
+  picture        String?
+  productionLine String?
+  isAdmin        Boolean @default(false)
+  isActive       Boolean @default(true)
+  tasks          Task[]
+}
+
+model Task {
+  id        Int       @id @default(autoincrement())
+  content   String
+  priority  Priority  @default(LOW)
+  category  String
+  stage     String
+  orderdate DateTime  @default(now())
+  enddate   DateTime?
+  createdBy User      @relation(fields: [authorId], references: [id])
+  authorId  Int
+}
+
+enum Priority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
