@@ -4,7 +4,7 @@ import { Member } from "../utils/models"
 
 function useFetch(url :string) {
 
-    const [data , setdata] = useState<Member[]>()
+    const [data , setdata] = useState<any[]>()
     const [error  , seterror] = useState('')
     const [loading ,setloading] = useState(false)
     

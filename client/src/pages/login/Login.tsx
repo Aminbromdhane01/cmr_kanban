@@ -12,18 +12,56 @@ import {
   Heading,
   Text,
   useColorModeValue,
-  Alert,
-  AlertIcon,
+
   useToast,
 } from '@chakra-ui/react'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-
+import { useForm, SubmitHandler } from "react-hook-form"
+import axios from 'axios'
 
 export default function Login() {
 
   const [email , setemail] = useState('') ;
   const [password , setpassword] = useState('') ; 
+  const {
+    register,
+    handleSubmit,
+   
+    formState: { errors },
+    reset,
+    getValues
+  } = useForm()
+  const  onSubmit: SubmitHandler<any> = async (data) => {console.log(data)
+    try {
+      const response = await axios.post('http://localhost:3333/api/users/login', data);
+      if (response.status === 200) {
+        toast({
+          title: 'Login Success',
+          
+          status: 'success',
+          duration: 1500,
+          isClosable: true,
+        })
+       setTimeout(() => { navigate('/dashboard')
+        
+       }, 1000);
+      }
+      
+    } catch (error) {
+      toast({
+        title: 'Email or Password INVALID',
+        
+        status: 'error',
+        duration: 1500,
+        isClosable: true,
+      })
+      
+     
+    reset() ;
+  }}
+  
+  
   
   const navigate = useNavigate()
   const toast = useToast()
@@ -63,6 +101,7 @@ export default function Login() {
       align={'center'}
       justify={'center'}
       bg={useColorModeValue('gray.50', 'gray.800')}>
+        <form >
       <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
         <Stack align={'center'}>
           <Heading fontSize={'4xl'}>Sign in to your account</Heading>
@@ -76,12 +115,12 @@ export default function Login() {
           <Stack spacing={4}>
             <FormControl id="email">
               <FormLabel>Email address</FormLabel>
-              <Input type="email" onChange={(e) => setemail(e.target.value)
+              <Input type="email" {...register('email')} onChange={(e) => setemail(e.target.value)
               }  />
             </FormControl>
-            <FormControl id="password">
+            <FormControl id="pwd">
               <FormLabel>Password</FormLabel>
-              <Input type="password" onChange={(e) => setpassword(e.target.value)} />
+              <Input type="password" {...register('pwd')} onChange={(e) => setpassword(e.target.value)} />
             </FormControl>
             <Stack spacing={10}>
               <Stack
@@ -92,7 +131,7 @@ export default function Login() {
                 <Text color={'blue.400'}>Forgot password?</Text>
               </Stack>
               <Button
-              onClick={successlogin}
+              onClick={handleSubmit(onSubmit)}
                 bg={'#A20B31'}
                 color={'white'}
                 _hover={{
@@ -106,6 +145,7 @@ export default function Login() {
           </Stack>
         </Box>
       </Stack>
+      </form>
     </Flex>
   )
 }

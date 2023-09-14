@@ -31,6 +31,31 @@ model Task {
   authorId  Int
 }
 
+model DeletedTask {
+  id        Int       @id @default(autoincrement())
+  Taskid    Int
+  content   String
+  priority  Priority  @default(LOW)
+  category  String
+  stage     String
+  orderdate DateTime  @default(now())
+  enddate   DateTime?
+  deletedby Int
+}
+
+model TaskHistory {
+  id         Int       @id @default(autoincrement())
+  Taskid     Int
+  content    String
+  priority   Priority  @default(LOW)
+  category   String
+  stage      String
+  orderdate  DateTime  @default(now())
+  enddate    DateTime?
+  updatedate DateTime  @default(now())
+  updatedby  Int
+}
+
 enum Priority {
   LOW
   NORMAL

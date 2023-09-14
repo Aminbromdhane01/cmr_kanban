@@ -1,5 +1,5 @@
 
-import { Request, Response } from "express";
+import { Request, Response,} from "express";
 import bcrypt from 'bcrypt';
 
 import prisma from "../services/prisma";
@@ -10,29 +10,57 @@ interface JwtPayload {
       email: string;
     };
   }
+  interface User {
+    username: string;
+    email: string;
+    pwd: string;
+    picture :string
+    productionLine : string
+    isAdmin : boolean
+    isActive : boolean
+  }
 
 export const userController = {
   async getall (req : Request , res : Response){
     const users = await prisma.user.findMany();
     return res.json(users)
   },
-  async login (req : Request , res : Response){
+  async  login(req : Request, res : Response) {
     const { email, pwd } = req.body;
-    const user = await prisma.user.findUnique({ where: { email } });
-    if (!user || user.pwd !== pwd) {
-        return res.status(401).json({ message: 'Invalid credentials' });
-      }
-    
   
-      const payload: JwtPayload = {
+    try {
+      const user = await prisma.user.findUnique({ where: { email } });
+  
+      if (!user) {
+        console.log('user not found');
+        
+        return res.status(404).json({ message: 'Invalid credentials' });
+        
+      }
+  
+      const isPasswordValid = await bcrypt.compare(pwd, user.pwd);
+  
+      if (!isPasswordValid) {
+        console.log('wrong pass');
+        
+        return res.status(404).json({ message: 'Invalid credentials' });
+      }
+  
+      const payload = {
         user: {
           id: user.id,
           email: user.email,
         },
       };
+  
       const token = jwt.sign(payload, process.env.JWT_SECRET as string);
+  
       res.status(200).json({ token });
-  } ,
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  },
   
   
   async signup(req : Request, res : Response)
@@ -75,7 +103,72 @@ export const userController = {
         console.error('Error during sign-up:', error);
         res.status(500).json({ message: 'An error occurred during sign-up' });
       }
+  },
+  async finduserbyid(req: Request, res: Response){
+   
+    const id = parseInt(req.params.id) ;
+   
+  try {
+    const user = await prisma.user.findUnique({where: {id}})
+    if(!user)
+    { 
+      res.status(404).json("User not found")
+    }
+    else {
+    res.status(200).json({user})
+    }
+  } catch (error) {
+    res.status(500).json({error: error})
+    
   }
+
+  } ,
+
+  async updateUserById(req : Request, res : Response) {
+    const id = parseInt(req.params.id);
+    const newData : User = req.body; 
+  
+    try {
+      const user = await prisma.user.findUnique({ where: { id } });
+  
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      if (newData.pwd) {
+        const hashedPassword = await bcrypt.hash(newData.pwd, 10);
+        newData.pwd = hashedPassword;
+      }
+    
+      const updatedUser = await prisma.user.update({ where: { id }, data: newData });
+  
+      return res.status(200).json({ user: updatedUser });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+  },
+  async  deleteUserById(req : Request, res : Response) {
+    const id = parseInt(req.params.id);
+  
+    try {
+      const user = await prisma.user.findUnique({ where: { id } });
+  
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+  
+     
+      await prisma.user.delete({ where: { id } });
+  
+      return res.status(204).end();
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+  
+  
+
   
   
 }

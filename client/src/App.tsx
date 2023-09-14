@@ -12,6 +12,7 @@ import Data from './pages/data_page/Data';
 import Admin from './pages/admin_dashboard/Admin';
 import Landing from './pages/landing/Landing';
 import History from './pages/history/History';
+import Register from './pages/register/Register';
 
 
 
@@ -27,6 +28,7 @@ function App() {
      <Routes>
      <Route path="/" element={<Landing />} />
      <Route path="/login" element={<Login />} />
+     <Route path="/register" element={<Register/>} />
      <Route
           path="/*"
           element={

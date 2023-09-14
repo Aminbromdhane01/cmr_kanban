@@ -6,6 +6,17 @@ export interface TaskModel {
     column : TypeColum;
     color: string;
 }
+
+export interface TasksModel{
+    
+    content : string,
+    piriority : string 
+    category : string ;
+    stage : string ,
+   
+    enddate : Date ,
+    authorId: number ,
+}
 export interface DrageItem
 {
     index : number;

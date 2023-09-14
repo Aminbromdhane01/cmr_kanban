@@ -32,12 +32,11 @@ function Dashboard() {
         </Grid>
        
         <DndProvider backend={HTML5Backend}>
-        <SimpleGrid columns = {{base : 1 , md :6}} spacing={{base : 16 , md :1}}  >
+        <SimpleGrid columns = {{base : 1 , md :5}} spacing={{base : 16 , md :1}}  >
           <Column column={TypeColum.BACKLOG}></Column>
           <Column column={TypeColum.TO_DO}></Column>
           <Column column={TypeColum.IN_PROGRESS}></Column>
           <Column column={TypeColum.TO_REVIEW}></Column>
-          <Column column={TypeColum.CLOSED}></Column>
           <Column column={TypeColum.CLOSED}></Column>
           
          

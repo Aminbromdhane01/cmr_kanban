@@ -1,102 +1,104 @@
 import { DeleteIcon, EditIcon, InfoIcon } from "@chakra-ui/icons";
 import { TaskModel } from "../utils/models"
-import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Box , Button, Heading, IconButton , Menu, MenuButton, MenuItem, MenuList, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Stack, Textarea, useDisclosure } from "@chakra-ui/react";
+import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Box , Button, FormControl, FormLabel, Heading, IconButton , Input, Menu, MenuButton, MenuItem, MenuList, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select, Stack, Textarea, useDisclosure } from "@chakra-ui/react";
 import { useTaskDragAndDrop } from "../hooks/useTaskDragAndDop";
 import { Avatar} from '@chakra-ui/react'
 import './Task.css'
 import React, { useEffect, useState } from "react";
 import Profiledetails from "./usedeatail/Details";
 import { Link } from "react-router-dom";
+
 import { useNavigate } from 'react-router-dom'
+import axios from "axios";
+import { SubmitHandler, useForm } from "react-hook-form";
 
 
 type TaskProps = {
     index: number ,
     task : TaskModel , 
+    content : string ,
+    color : string ,
     
 }
 
-function Task({ index , task } : TaskProps) { 
+function Task({ index , task , content , color} : TaskProps ) { 
+
   const  { isOpen, onOpen, onClose } = useDisclosure()
   const  { isOpen : isOpenModel , onOpen : onOpenModel, onClose : onCloseModel} = useDisclosure()
+  const  { isOpen : isOpenUpdate , onOpen : onOpenUpdate, onClose : onCloseUpdate} = useDisclosure()
   const cancelRef = React.useRef<HTMLInputElement>(null)  
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+ 
+  } = useForm()
+  const Updatetask = async (id : string , userid : string , data : any) => {
+    try {
+      const response = await axios.patch('http://127.0.0.1:3333/api/tasks/update/'+id+'/'+userid , data)
+      console.log(response);
+      
+    } catch (error) {
+      console.log(error);
+      
+    }
+   }
+     const [updatedData , setdata] = useState<any>() ;
+    let formdata : any = {}
+    
+  const onSubmit : SubmitHandler<any> =  (data) =>{
+    try {
+      console.log(data);
+      
+      if (data.content != '' ) formdata.content = data.content
+      if (data.priority != '' ) formdata.priority = data.priority
+      if (data.category != '' ) formdata.category = data.category
+      if (data.stage != '' ) formdata.stage = data.stage
+      console.log(formdata);
+      if (data.enddate != ''){
+      const parts = data.enddate.split('-');
+      const date = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+      formdata.enddate = date }
+      
+      Updatetask(index.toString(), userid.toString() , formdata)    
+      reset();  
+        
+          
+          
+         } catch (error) {
+          console.log(error);
+          
+      
+    }
+  
+  }
+
+
+  
 
   const {ref , isDragging} = useTaskDragAndDrop<HTMLDivElement>({
     task , index }
   );
-  console.log(task.title);
-  const [data , setdata] = useState<any>()
-
-
-  useEffect(() => {
-    
-   console.log(localStorage.getItem('tasks'));
-   setdata(localStorage.getItem('tasks'))
-   console.log(data);
-   
-    
-   
-   
-  },[]);  
-
-  const deleteItem = (todelete_id : string) => {
-    
-    interface Task {
-      id: string;
-      title: string;
-      color: string;
-      column: string;
-    }
-    
-    interface JsonData {
-      [key: string]: Task[];
-    }
-    
-    // Your JSON data in string form
-    const jsonDataString = localStorage.getItem('tasks')
-   
-    
-    
-   
-    
-    // Parse the JSON data string into a JavaScript object
-    const jsonData: JsonData = JSON.parse(jsonDataString|| '{}');
-    
-    let taskFound = false;
-    
-    // Iterate through each column in the JSON data
-    for (const column in jsonData) {
-      const taskIndex = jsonData[column].findIndex(task => task.id === todelete_id);
+  const userid = 15
+  const deletetask = async (id : string , userid : string) =>{
+    try {
+      const response = await axios.delete('http://127.0.0.1:3333/api/tasks/delete/'+id+'/'+userid)
+      console.log(response);
       
-      if (taskIndex !== -1) {
-        jsonData[column].splice(taskIndex, 1);
-        taskFound = true;
-        console.log(`Task with ID ${todelete_id} deleted from column ${column}.`);
-        const modifiedJsonDataString = JSON.stringify(jsonData, null, 2);
-
-        console.log(modifiedJsonDataString);
-        localStorage.setItem('tasks', modifiedJsonDataString)
-        const number : number = parseInt(localStorage.getItem('deleted_item') || '{}') +1
-        localStorage.setItem('deleted_item', number.toString() )
-        setTimeout(() => {
-          window.location.reload();
-      }, 100);
-        break; // Exit the loop after finding and deleting the task
-      }
+    } catch (error) {
+      console.log(error);
+      
     }
     
-    if (!taskFound) {
-      console.log(`Task with ID ${todelete_id} not found.`);
-    }
-    
-    // Convert the modified JavaScript object back into a JSON string
-    
-    // Display the updated JSON data string
-   
-    
-
 
   }
+
+
+
+ 
+
+ 
   return (
    <Box
    
@@ -117,7 +119,7 @@ function Task({ index , task } : TaskProps) {
    bgColor="white">
    
     <Box className="bar"
-    bgColor={task.color}>
+    bgColor={color}>
 
 
     </Box>
@@ -153,6 +155,7 @@ function Task({ index , task } : TaskProps) {
     icon={<EditIcon/>}
     opacity={isDragging ? 0.5 : 0}
    _hover={{ opacity: 1 }}
+   onClick={onOpenUpdate}
 
 
     />
@@ -173,7 +176,7 @@ function Task({ index , task } : TaskProps) {
     </Stack>
     
     <Textarea
-    value={task.title}
+    value={content}
     fontWeight="semibold"
     cursor= "inherit"
     border= "none"
@@ -215,7 +218,8 @@ function Task({ index , task } : TaskProps) {
               <Button colorScheme='red' onClick={() => 
               {
                 onClose;
-                deleteItem(task.id);
+                deletetask(index.toString() , userid.toString())
+                window.location.reload();
               }} ml={3} >
                 Delete
               </Button>
@@ -237,6 +241,73 @@ function Task({ index , task } : TaskProps) {
               Close
             </Button>
             
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+      <Modal isOpen={isOpenUpdate} onClose={onCloseUpdate}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Update Task</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <form>
+            <FormControl id="piriority">
+              <FormLabel>Piriority</FormLabel>
+              <Select placeholder='Select piriority' {...register('priority')}  >
+                <option value='LOW'>LOW</option>
+                <option value="MEDUIM">NORMAL</option>
+                <option value='HIGH'>HIGH</option>
+                <option value='URGENT'>URGENT</option>
+                
+              </Select>
+            </FormControl>
+            <FormControl id="Category">
+              <FormLabel>Category</FormLabel>
+              <Select placeholder='Select Category' {...register('category')} >
+                <option value='Semi Fini'>Semi Fini</option>
+                <option value="Assemblage">Assemblage</option>
+                <option value='Controle Electrique'>Controle Electrique</option>
+                <option value='Foaming'>Foaming</option>
+                <option value="Rework">Rework</option>
+                <option value="Controle visuelle">Controle visuelle</option>
+                
+              </Select>
+            </FormControl>
+            <FormControl>
+              <FormLabel>End Date</FormLabel>
+              <Input type="date" {...register('enddate')} />
+                      </FormControl>
+                      <FormControl id="stage">
+              <FormLabel>Stage</FormLabel>
+              <Select placeholder='Select Stage'  {...register('stage')}>
+                <option value='backlog'>Backloag</option>
+                <option value="Todo">Todo</option>
+                <option value='In Progress'>In Progress</option>
+                <option value='Review'>Review</option>
+                <option value='Closed'>Closed</option>
+               
+                
+              </Select>
+            </FormControl>
+
+            <FormControl id="content">
+            <FormLabel>Content</FormLabel>
+            
+  <Textarea  {...register('content')  } />
+
+
+              
+            </FormControl>
+
+            </form>
+
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme='blue' mr={3} onClick={onCloseUpdate}>
+              Close
+            </Button>
+            <Button variant="ghost" bgColor={"green.300"} color={"white"} onClick={handleSubmit(onSubmit)  }>Update</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
