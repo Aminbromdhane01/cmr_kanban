@@ -60,9 +60,10 @@ export default function Topbar() {
           <HStack spacing={8} alignItems={'center'}>
             
             <HStack as={'nav'} spacing={4} display={{ base: 'none', md: 'flex' }}>
-              {Links.map((link) => (
-                <Link to={link}  ><NavLink key={1}  >{link}</NavLink></Link>
-              ))}
+             
+                <Link to={'/admin'}  ><NavLink    ><span style={{fontSize :'20px' , fontFamily :'inherit'}}>Admin</span></NavLink></Link>
+                <Link to={'/dashboard/all'}  ><span style={{fontSize :'20px' , fontFamily :'inherit'}} ><NavLink   >Kanban Board</NavLink></span></Link>
+             
             </HStack>
           </HStack>
           <Flex alignItems={'center'}>

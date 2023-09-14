@@ -39,6 +39,7 @@ model DeletedTask {
   category  String
   stage     String
   orderdate DateTime  @default(now())
+  deletedat DateTime  @default(now())
   enddate   DateTime?
   deletedby Int
 }

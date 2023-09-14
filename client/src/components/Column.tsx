@@ -22,9 +22,13 @@ const ColumnColorScheme : Record<TypeColum, string> = {
     closed : 'red',
     backlog : 'yellow'
 }
+interface ColumnProps {
+  column: TypeColum;
+  taskdata?: any[];
 
+}
 
-function Column({ column} :{column : TypeColum}) {
+function Column({ column, taskdata}: ColumnProps ) {
 let formdata : TasksModel = {content : '' , piriority :'' , category : '' , stage :'' , enddate : new Date() , authorId : 0  }
   const {
     register,
@@ -62,7 +66,7 @@ let formdata : TasksModel = {content : '' , piriority :'' , category : '' , stag
   const { isOpen, onOpen, onClose } = useDisclosure()
     const {tasks , addEmptyTask , dropTaskFrom } = useColumnTasks(column)
     const {dropRef , isOver} = useColumnDrop(column,dropTaskFrom)
-    const ColumnTasks = data?.map((task, index) => {
+    const ColumnTasks = taskdata?.map((task :any, index :any) => {
       if ((task.stage) === column) {
         return (
           <Task

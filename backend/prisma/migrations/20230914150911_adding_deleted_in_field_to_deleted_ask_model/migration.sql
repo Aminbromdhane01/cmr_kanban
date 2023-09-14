@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `deletedtask` ADD COLUMN `deletedat` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);

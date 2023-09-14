@@ -128,7 +128,7 @@ function Task({ index , task , content , color} : TaskProps ) {
      top={0}
      right={0}
      gap={0}>
-      <Link to={'/history/1'}>
+      <Link to={'/history/'+index}>
     <IconButton  
     
    

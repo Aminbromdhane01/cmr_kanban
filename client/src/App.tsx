@@ -13,6 +13,7 @@ import Admin from './pages/admin_dashboard/Admin';
 import Landing from './pages/landing/Landing';
 import History from './pages/history/History';
 import Register from './pages/register/Register';
+import Archive from './pages/archive/Archive';
 
 
 
@@ -29,6 +30,7 @@ function App() {
      <Route path="/" element={<Landing />} />
      <Route path="/login" element={<Login />} />
      <Route path="/register" element={<Register/>} />
+     <Route path='/archive' element={<Archive/>}></Route>
      <Route
           path="/*"
           element={
@@ -37,7 +39,7 @@ function App() {
               <Routes>
                 
                 <Route path='/history/:id' element={<History/>}></Route>
-                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/dashboard/:category" element={<Dashboard />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/data" element={<Data />} />
               </Routes>
