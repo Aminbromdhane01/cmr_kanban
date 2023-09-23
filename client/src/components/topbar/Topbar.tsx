@@ -18,6 +18,8 @@ import {
 } from '@chakra-ui/react'
 import { HamburgerIcon, CloseIcon, AddIcon } from '@chakra-ui/icons'
 import { Link } from 'react-router-dom'
+import decodeToken from '../../utils/decodeToken'
+import useUserById from '../../hooks/getUserbyId'
 
 interface Props {
   children: React.ReactNode
@@ -45,6 +47,10 @@ const NavLink = (props: Props) => {
 
 export default function Topbar() {
   const { isOpen, onOpen, onClose } = useDisclosure()
+   const token : any = decodeToken()  
+  
+  
+   
 
   return (
     <>
@@ -76,6 +82,7 @@ export default function Topbar() {
               Action
             </Button>
             <Menu>
+              <span>{useUserById(token.id)?.username}</span>
               <MenuButton
                 as={Button}
                 rounded={'full'}
@@ -90,8 +97,8 @@ export default function Topbar() {
                 />
               </MenuButton>
               <MenuList>
-                <MenuItem>Link 1</MenuItem>
-                <MenuItem>Link 2</MenuItem>
+                <Link to={'/archive'}><MenuItem>Archive</MenuItem></Link>
+                <MenuItem>Logout</MenuItem>
                 <MenuDivider />
                 <MenuItem>Link 3</MenuItem>
               </MenuList>

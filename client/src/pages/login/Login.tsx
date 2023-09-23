@@ -43,7 +43,9 @@ export default function Login() {
           duration: 1500,
           isClosable: true,
         })
-       setTimeout(() => { navigate('/dashboard')
+        localStorage.setItem('token',response.data.token)
+        
+       setTimeout(() => { navigate('/dashboard/all')
         
        }, 1000);
       }

@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { axiosInstance, setAuthToken } from '../config/axiosConfig';
 
 function getUpdatedTask(id: number | undefined) {
   const [data, setData] = useState<any | null>(null);
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
     const fetchData = async () => {
+    setAuthToken(token)
       try {
-        const response = await axios.get('http://127.0.0.1:3333/api/updatedtask/findbytaskid/' + id);
+        const response = await axiosInstance.get('/api/updatedtask/findbytaskid/' + id);
         setData(response.data);
       } catch (error) {
         console.log(error);

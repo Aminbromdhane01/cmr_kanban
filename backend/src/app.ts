@@ -1,5 +1,7 @@
 import express from "express"
-import { deletedtaskRoutes, taskRoutes, updatedtaskRoutes, userRoutes } from "./routes";
+import { deletedtaskRoutes, projectRoutes, taskRoutes, updatedtaskRoutes, userRoutes } from "./routes";
+
+
 const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
@@ -19,12 +21,15 @@ class App  {
         this.server.use(express.json());
         this.server.use(cors( 
         ))
+       
     }
     routes(){
         this.server.use('/api/users',userRoutes);
         this.server.use('/api/tasks',taskRoutes)
         this.server.use('/api/deletedtask',deletedtaskRoutes)
         this.server.use('/api/updatedtask',updatedtaskRoutes)
+        this.server.use('/api/projects',projectRoutes)
+        this.server.use('/api/images',express.static('./src/uploads') )
     }
     prismaEvents(){
         prisma.$on('beforeDelete', async ({ model , where } : any) => {

@@ -12,6 +12,7 @@ import {  useState } from "react";
 import { TasksModel } from "../utils/models";
 import axios from "axios";
 import useFetch from "../hooks/useFetch";
+import { axiosInstance, setAuthToken } from "../config/axiosConfig";
 
 const ColumnColorScheme : Record<TypeColum, string> = {
 
@@ -39,18 +40,19 @@ let formdata : TasksModel = {content : '' , piriority :'' , category : '' , stag
  
   } = useForm()
   const onSubmit : SubmitHandler<any> = async (data) =>{
-    
+    const token = localStorage.getItem('token');
+
   try {
+    setAuthToken(token)
     formdata = data
-    formdata.authorId
-    =18 
+   
     formdata.stage = column
     const parts = data.enddate.split('-');
     const date = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
     formdata.enddate = date 
     console.log(formdata);
 
-    const response = await axios.post('http://localhost:3333/api/tasks/create', formdata)
+    const response = await axiosInstance.post('/api/tasks/create', formdata)
     console.log(response);
     window.location.reload();
     
@@ -75,6 +77,7 @@ let formdata : TasksModel = {content : '' , piriority :'' , category : '' , stag
             index={task.id}
             color="red"
             content={task.content}
+            category={task.category}
           />
         );
       } else {
@@ -135,7 +138,7 @@ let formdata : TasksModel = {content : '' , piriority :'' , category : '' , stag
               <FormLabel>Piriority</FormLabel>
               <Select placeholder='Select piriority' {...register('priority')} >
                 <option value='LOW'>LOW</option>
-                <option value="MEDUIM">NORMAL</option>
+                <option value="NORMAL">NORMAL</option>
                 <option value='HIGH'>HIGH</option>
                 <option value='URGENT'>URGENT</option>
                 

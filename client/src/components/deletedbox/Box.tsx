@@ -1,6 +1,12 @@
 import { Stack, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
+import useFetch from '../../hooks/useFetch'
 
 const Box = () => {
+
+
+  const {data , error , loading} :any = useFetch('http://localhost:3333/api/deletedtask/count')
+
+  
   return (
     <>
     <Stack mb={3} >
@@ -15,7 +21,7 @@ const Box = () => {
     </Thead>
     <Tbody >
       <Tr >
-        <Td textAlign={'center'} fontSize={'xl'}>{localStorage.getItem('deleted_item')}</Td>
+        <Td textAlign={'center'} fontSize={'xl'}>{data?.count}</Td>
         
       </Tr>
      

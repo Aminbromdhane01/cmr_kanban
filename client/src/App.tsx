@@ -14,6 +14,8 @@ import Landing from './pages/landing/Landing';
 import History from './pages/history/History';
 import Register from './pages/register/Register';
 import Archive from './pages/archive/Archive';
+import Members from './pages/Data/Members';
+import ProjectForm from './pages/createProject/ProjectForm';
 
 
 
@@ -30,6 +32,7 @@ function App() {
      <Route path="/" element={<Landing />} />
      <Route path="/login" element={<Login />} />
      <Route path="/register" element={<Register/>} />
+     <Route path='/data' element={<Members/>}></Route>
      <Route path='/archive' element={<Archive/>}></Route>
      <Route
           path="/*"
@@ -41,7 +44,7 @@ function App() {
                 <Route path='/history/:id' element={<History/>}></Route>
                 <Route path="/dashboard/:category" element={<Dashboard />} />
                 <Route path="/admin" element={<Admin />} />
-                <Route path="/data" element={<Data />} />
+                <Route path="/project" element={<ProjectForm />} />
               </Routes>
             </div>
           }

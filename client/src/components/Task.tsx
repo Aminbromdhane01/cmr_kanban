@@ -17,11 +17,12 @@ type TaskProps = {
     index: number ,
     task : TaskModel , 
     content : string ,
+    category : string ,
     color : string ,
     
 }
 
-function Task({ index , task , content , color} : TaskProps ) { 
+function Task({ index , task , content , color , category} : TaskProps ) { 
 
   const  { isOpen, onOpen, onClose } = useDisclosure()
   const  { isOpen : isOpenModel , onOpen : onOpenModel, onClose : onCloseModel} = useDisclosure()
@@ -63,7 +64,7 @@ function Task({ index , task , content , color} : TaskProps ) {
       
       Updatetask(index.toString(), userid.toString() , formdata)    
       reset();  
-        
+      window.location.reload();
           
           
          } catch (error) {
@@ -80,7 +81,7 @@ function Task({ index , task , content , color} : TaskProps ) {
   const {ref , isDragging} = useTaskDragAndDrop<HTMLDivElement>({
     task , index }
   );
-  const userid = 15
+  const userid = 20
   const deletetask = async (id : string , userid : string) =>{
     try {
       const response = await axios.delete('http://127.0.0.1:3333/api/tasks/delete/'+id+'/'+userid)
@@ -176,7 +177,7 @@ function Task({ index , task , content , color} : TaskProps ) {
     </Stack>
     
     <Textarea
-    value={content}
+    value={content + '\n \n ' + category}
     fontWeight="semibold"
     cursor= "inherit"
     border= "none"

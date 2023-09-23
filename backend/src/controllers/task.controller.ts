@@ -4,11 +4,22 @@ import prisma from "../services/prisma";
 export const TaskController = {
 
     async getall(req : Request , res : Response)
-    {
+    { 
+
+      const { category, project_id , user_id } = req.query;
        try {
-                   
-        const Tasks = await prisma.task.findMany();
-        return res.status(200).json(Tasks)
+        
+            let filteredTasks = await prisma.task.findMany();
+            if (category) {
+               filteredTasks = filteredTasks.filter((task) => task.category === category);
+             }
+             if (project_id) {
+               filteredTasks = filteredTasks.filter((task) => task.projectId === parseInt(project_id as string));
+             }
+             if (user_id) {
+               filteredTasks = filteredTasks.filter((task) => task.authorId === parseInt(user_id as string));
+             }
+             res.status(200).json(filteredTasks)
           
        } catch (error) {
         res.status(500).json({ error: 'Internal Server Error' });
@@ -21,9 +32,12 @@ export const TaskController = {
         category : string ,
         stage : string ,
         enddate : string ,
-        authorId : number
+        authorId : number ,
+        projectId : number ,
        }
-       const data : Task = req.body
+       let data : Task = req.body
+       data.authorId = req.user?.id as number
+       data.projectId = 3
        console.log(data);
        
        try {
@@ -35,7 +49,8 @@ export const TaskController = {
          category : CreatedTask.category,
          stage : CreatedTask.stage,
          orderdate :CreatedTask.orderdate,
-         updatedby :CreatedTask.authorId
+         authorId :CreatedTask.authorId
+        
         }})
         res.status(201).json({message : 'Task created successfully' , createdTask: CreatedTask})
        } catch (error) {
@@ -82,7 +97,7 @@ export const TaskController = {
                  category : target.category,
                  stage : target.stage,
                  orderdate :target.orderdate,
-                 deletedby :user_id
+                 authorId :user_id
                  
                  
                },
@@ -125,7 +140,7 @@ async update(req : Request, res : Response){
           category : target.category,
           stage : target.stage,
           orderdate :target.orderdate,
-          updatedby :user_id
+          authorId :user_id
 
          }
       })

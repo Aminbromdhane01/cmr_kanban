@@ -4,6 +4,10 @@ import bcrypt from 'bcrypt';
 
 import prisma from "../services/prisma";
 import jwt from 'jsonwebtoken';
+
+
+
+
 interface JwtPayload {
     user: {
       id: number;
@@ -19,6 +23,7 @@ interface JwtPayload {
     isAdmin : boolean
     isActive : boolean
   }
+  
 
 export const userController = {
   async getall (req : Request , res : Response){
@@ -47,13 +52,14 @@ export const userController = {
       }
   
       const payload = {
-        user: {
+        
           id: user.id,
           email: user.email,
-        },
+          isAdmin: user.isAdmin
+        
       };
   
-      const token = jwt.sign(payload, process.env.JWT_SECRET as string);
+      const token = jwt.sign(payload, process.env.JWT_SECRET as string,{ expiresIn: '1h' });
   
       res.status(200).json({ token });
     } catch (error) {
@@ -63,7 +69,7 @@ export const userController = {
   },
   
   
-  async signup(req : Request, res : Response)
+  async signup(req : Request, res : Response , )
   {
     interface User {
         username: string;
@@ -74,27 +80,33 @@ export const userController = {
         isAdmin : boolean
         isActive : boolean
       }
+
     try {
         const { username, email, pwd , picture , productionLine ,isAdmin } = req.body ;
-    
-        // Check if the user already exists
+        const [firstUploadedFile] : any = req.files;
+        const { filename } = firstUploadedFile;
+        console.log(filename);
+        
+       
+
+        
+
         const existingUser = await prisma.user.findUnique({ where: { email} });
         if (existingUser) {
           return res.status(400).json({ message: 'User already exists' });
         }
     
-        // Hash the password before storing it
         const hashedPassword = await bcrypt.hash(pwd, 10);
     
-        // Create a new user in the database
+        
         const newUser = await prisma.user.create({
           data: {
             username,
             email,
             pwd: hashedPassword,
-            picture,
+            picture :filename as string,
             productionLine,
-            isAdmin
+            isAdmin : true
           },
         });
     

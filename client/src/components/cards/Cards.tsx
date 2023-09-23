@@ -46,17 +46,21 @@ const Cards = () => {
     gap={6} className="cards">
         <GridItem rowSpan={2} colSpan={2}><Charts/></GridItem>
        
-  <GridItem w='80%' h='150' bg='rgba(255,183,208, 255)' className="card red" colSpan={1}>
+  <GridItem w='80%' h='150'  className="card red" colSpan={1}>
+    <div style={{background : 'rgba(255,183,208, 255)' , height : '100%', position: 'absolute', width :'6% ' , top :0, left:0 }} ></div>
     <h3 className="tip" >Urgent</h3> <h4 className="second-text">{RedCount}</h4>
   </GridItem>
   
-  <GridItem w='80%' h='150' bg='rgba(255,239,185, 255)' className="card orange" colSpan={1}>
+  <GridItem w='80%' h='150' className="card orange" colSpan={1}>
+  <div style={{background : 'rgba(255,239,185, 255)' , height : '100%', position: 'absolute', width :'6% ' , top :0, left:0 }} ></div>
     <h3 className="tip">High</h3> <h4 className="second-text">{OrangeCount}</h4>
   </GridItem>
-  <GridItem w='80%' h='150' bg='rgba(209,245,255, 255)' className="card blue " colSpan={1}>
+  <GridItem w='80%' h='150' className="card blue " colSpan={1}>
+  <div style={{background : 'rgba(209,245,255, 255)' , height : '100%', position: 'absolute', width :'6% ' , top :0, left:0 }} ></div>
     <h3 className="tip">Normal</h3> <h4  className="second-text">{BlueCount}</h4>
   </GridItem>
-  <GridItem w='80%' h='150' bg='rgba(222,255,203, 255)' className="card green" colSpan={1}>
+  <GridItem w='80%' h='150'  className="card green" colSpan={1}>
+  <div style={{background : 'rgba(222,255,203, 255)' , height : '100%', position: 'absolute', width :'6% ' , top :0, left:0 }} ></div>
     <h3 className="tip">Low</h3> <h4  className="second-text">{GreenCount}</h4>
   </GridItem>
 </Grid>

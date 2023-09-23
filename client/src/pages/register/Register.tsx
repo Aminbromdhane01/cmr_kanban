@@ -15,7 +15,9 @@ import {
   import { useForm, SubmitHandler } from "react-hook-form"
 
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 const Register = () => {
+  const navigate = useNavigate()
   const {
     register,
     handleSubmit,
@@ -27,7 +29,7 @@ const Register = () => {
   const toast = useToast()
   const  onSubmit: SubmitHandler<any> = async (data) => {console.log(data)
     try {
-      const response = await axios.post('http://localhost:3333/api/users/signup', data);
+      const response = await axios.post('http://localhost:3333/api/users/signup', data , {headers: {'Content-Type': 'multipart/form-data'}});
       if (response.status === 201) {
         console.log(response.data);
         
@@ -38,7 +40,9 @@ const Register = () => {
           duration: 1500,
           isClosable: true,
         })
+        navigate('/login')
         reset() ;
+         
 
       }
       
@@ -55,7 +59,7 @@ const Register = () => {
       align={'center'}
       justify={'center'}
       bg={useColorModeValue('gray.50', 'gray.800')}>
-         <form >
+         <form encType='multipart/form-data'>
       <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
         <Stack align={'center'}>  
           <Heading fontSize={'4xl'}>Register new account</Heading>
@@ -104,7 +108,7 @@ const Register = () => {
             </FormControl>
             <FormControl id="picture">
               <FormLabel>Picture</FormLabel>
-              <Input type="text" {...register('picture')}/>
+              <Input type="file" {...register('picture')} />
             </FormControl>
             <FormControl id="production_line">
               <FormLabel>Production Line</FormLabel>
