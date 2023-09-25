@@ -1,8 +1,7 @@
 import { SimpleGrid } from "@chakra-ui/react"
 import Card from "../../components/deleted card/Card"
 import { useEffect, useState } from "react"
-import axios from "axios"
-import getUserbyId from "../../hooks/getUserbyId"
+
 import { axiosInstance, setAuthToken } from "../../config/axiosConfig"
 type DeletedTask = {
 
@@ -13,9 +12,9 @@ type DeletedTask = {
     category: string,
     stage: string,
     orderdate: Date,
-    deletedat: Date ,
+    deletetIn: Date ,
     enddate: Date | null,
-    deletedby:number
+    authorId:number
 } | null
 const Archive = () => {
    
@@ -44,7 +43,7 @@ const Archive = () => {
   
 
 
-  console.log(getUserbyId(15)?.username);
+
   
   
    
@@ -60,8 +59,8 @@ const Archive = () => {
       {getdata?.map((task ) =>{
       
         return(
-      <Card key={task?.id} content={task?.content} stage={task?.stage} category={task?.category} userid={task?.deletedby} priority={task?.priority}  
-      enddate={task?.enddate} deleteddate={task?.deletedat}/> )}
+      <Card key={task?.id} content={task?.content} stage={task?.stage} category={task?.category} userid={task?.authorId} priority={task?.priority}  
+      enddate={task?.enddate} deleteddate={task?.deletetIn}/> )}
       )}
    </SimpleGrid>
    </>

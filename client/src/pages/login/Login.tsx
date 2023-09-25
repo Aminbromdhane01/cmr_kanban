@@ -45,7 +45,7 @@ export default function Login() {
         })
         localStorage.setItem('token',response.data.token)
         
-       setTimeout(() => { navigate('/dashboard/all')
+       setTimeout(() => { navigate('/dashboard')
         
        }, 1000);
       }
@@ -67,33 +67,7 @@ export default function Login() {
   
   const navigate = useNavigate()
   const toast = useToast()
-   
-  const successlogin = () => {
-
-    if (email == 'admin@cmr.com' && password == 'admin') {
-
-    toast({
-      title: 'Login Success',
-      
-      status: 'success',
-      duration: 1500,
-      isClosable: true,
-    })
-   setTimeout(() => { navigate('/dashboard')
-    
-   }, 1000); }
-   else{
-    toast({
-      title: 'Email or Password INVALID',
-      
-      status: 'error',
-      duration: 1500,
-      isClosable: true,
-    })
-
-   }
-   
-  }
+  
 
   
 

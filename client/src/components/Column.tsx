@@ -13,6 +13,7 @@ import { TasksModel } from "../utils/models";
 import axios from "axios";
 import useFetch from "../hooks/useFetch";
 import { axiosInstance, setAuthToken } from "../config/axiosConfig";
+import Convert from "../utils/convertPtoColor";
 
 const ColumnColorScheme : Record<TypeColum, string> = {
 
@@ -30,7 +31,7 @@ interface ColumnProps {
 }
 
 function Column({ column, taskdata}: ColumnProps ) {
-let formdata : TasksModel = {content : '' , piriority :'' , category : '' , stage :'' , enddate : new Date() , authorId : 0  }
+let formdata : TasksModel = {content : '' , piriority :'' , category : '' , stage :'' , enddate : new Date() , authorId : 0 , projectId :0 }
   const {
     register,
     handleSubmit,
@@ -50,6 +51,7 @@ let formdata : TasksModel = {content : '' , piriority :'' , category : '' , stag
     const parts = data.enddate.split('-');
     const date = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
     formdata.enddate = date 
+    formdata.projectId = parseInt(data.projectId)
     console.log(formdata);
 
     const response = await axiosInstance.post('/api/tasks/create', formdata)
@@ -64,6 +66,7 @@ let formdata : TasksModel = {content : '' , piriority :'' , category : '' , stag
   }
 
   const {data , error , loading} = useFetch('http://localhost:3333/api/tasks')
+  const {data : projects , error : err, loading : load} = useFetch('http://127.0.0.1:3333/api/projects')
   console.log(data);
   const { isOpen, onOpen, onClose } = useDisclosure()
     const {tasks , addEmptyTask , dropTaskFrom } = useColumnTasks(column)
@@ -75,9 +78,10 @@ let formdata : TasksModel = {content : '' , piriority :'' , category : '' , stag
             key={task.id}
             task={task}
             index={task.id}
-            color="red"
+            color={Convert(task.priority) as string}
             content={task.content}
             category={task.category}
+            authorId={task.authorId}
           />
         );
       } else {
@@ -154,6 +158,15 @@ let formdata : TasksModel = {content : '' , piriority :'' , category : '' , stag
                 <option value="Rework">Rework</option>
                 <option value="Controle visuelle">Controle visuelle</option>
                 
+              </Select>
+            </FormControl>
+            <FormControl id="Project">
+              <FormLabel>Project</FormLabel>
+              <Select placeholder='Select Project' {...register('projectId')} >
+                {projects?.map(project =>(
+                  <option value={project.id}>{project.Name}</option>
+                ))}
+              
               </Select>
             </FormControl>
             <FormControl>

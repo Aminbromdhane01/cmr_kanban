@@ -1,7 +1,15 @@
 import { ProgressBar } from "react-bootstrap"
 import projects from "../../utils/projects"
+import useFetch from "../../hooks/useFetch"
+import { Box } from "@chakra-ui/react"
 
 const Project_table = () => {
+
+  const {data , error , loading} = useFetch('http://localhost:3333/api/projects')
+  console.log(data);
+
+  
+  
   return (
     <div className="col-lg-12 grid-margin stretch-card" >
     <div className="card" style={{borderRadius : '0px'}}>
@@ -16,21 +24,29 @@ const Project_table = () => {
                 <th> Name </th>
                 <th> Client Name</th>
                 <th> Production Unit </th>
-                <th> Progress </th>
-                <th> Deadline </th>
+                <th> IsPresent </th>
+               
               </tr>
             </thead>
             <tbody>
-             {projects.map(project =>(
+             {data?.map(project =>(
                 <tr>
-                <td> {project.name} </td>
-                <td> {project.client_name} </td>
-                <td> {project.production_unit} </td>
+                <td> {project.Name} </td>
+                <td> {project.ClientName} </td>
+                <td> {project.ProductionUnit} </td>
                 <td>
-                  <ProgressBar variant="info" now={project.progress} style={{height : "10px" , marginTop : "6px"}} />
+                <Box h={"13px"}
+            w={"13px"}
+            borderRadius={"50px"}
+            backgroundColor={project.isPresent ? "#7fdb63" : "red" }
+            marginLeft={3.5}
+            marginTop={3}
+            
+           
+           ></Box>
                 </td>
                 
-                <td> {project.deadline.toDateString()}</td>
+               
               </tr>
              ))}
               

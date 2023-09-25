@@ -1,9 +1,17 @@
 function Convert(value: string)  {
 
  switch(value){
-  case 'LOW' :
+  case 'URGENT' :
     return 'red'
+  case 'LOW' :
+    return 'green'  
+  case 'HIGH' :
+    return 'yellow'
+  case 'NORMAL' :
+    return 'blue'    
     
  }
 
 }
+
+export default Convert

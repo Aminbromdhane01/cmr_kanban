@@ -5,7 +5,43 @@ import { deletedtaskRoutes, projectRoutes, taskRoutes, updatedtaskRoutes, userRo
 const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
+async function updateTaskPriorities() {
+    try {
+        const tasks = await prisma.task.findMany();
 
+        const currentDate = new Date() as any;
+    
+        for (const task of tasks) {
+            
+          const daysUntilDeadline = Math.ceil((task.enddate  - currentDate ) / (1000 * 60 * 60 * 24));
+    
+          let updatedPriority;
+    
+          if (daysUntilDeadline <= 1) {
+            updatedPriority = 'URGENT';
+          } else if (daysUntilDeadline <= 3) {
+            updatedPriority = 'HIGH';
+          } else if (daysUntilDeadline <= 6) {
+            updatedPriority = 'NORMAL';
+          }
+    
+        
+          await prisma.task.update({
+            where: { id: task.id },
+            data: { priority: updatedPriority },
+          });
+    
+         
+        }
+    
+        
+  
+    
+    } catch (error) {
+      console.error('Error updating task priorities:', error);
+    }
+  }
+  
 const cors = require("cors");
 class App  {
     public server ;
@@ -14,7 +50,8 @@ class App  {
         this.server = express() ;
         this.middlewares();
         this.routes();
-        this.prismaEvents();
+        this.checkpiriority();
+        
 
     }
     middlewares(){
@@ -31,28 +68,13 @@ class App  {
         this.server.use('/api/projects',projectRoutes)
         this.server.use('/api/images',express.static('./src/uploads') )
     }
-    prismaEvents(){
-        prisma.$on('beforeDelete', async ({ model , where } : any) => {
-            if (model === 'Task') {
-                console.log('hello world');
-                
-              const taskToDelete = await prisma.task.findUnique({ where });
-          
-              await prisma.taskclone.create({
-                data: {
-                    Taskid: taskToDelete.id,
-                    content: taskToDelete.content,
-                    priority: taskToDelete.piriority,
-                    category:taskToDelete.category,
-                    stage:taskToDelete.stage,
-                    orderdate:taskToDelete.orderdate,
-                    enddate : taskToDelete.enddate,
+    checkpiriority(){
+        const intervalInMilliseconds = 24 * 60 * 60 * 1000;
+        updateTaskPriorities(); // 
+        setTimeout(this.checkpiriority, intervalInMilliseconds);
 
-                },
-              });
-            }
-          });
     }
+   
 
 }
 

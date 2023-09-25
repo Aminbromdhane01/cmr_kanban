@@ -34,7 +34,7 @@ console.log(data);
     <Tbody>
       
     { data != null && data.map((row, index) => (
-          <Row key={row.id} content={row.content} userid={row.updatedby} priority={row.priority} category={row.category}
+          <Row key={row.id} content={row.content} userid={row.authorId} priority={row.priority} category={row.category}
           stage={row.stage} enddate={row.enddate} updatedate={row.updatedate} orderdate={row.orderdate}/>
           ))}
       

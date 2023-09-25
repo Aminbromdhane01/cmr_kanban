@@ -16,6 +16,7 @@ export interface TasksModel{
    
     enddate : Date ,
     authorId: number ,
+    projectId: number
 }
 export interface DrageItem
 {
@@ -39,7 +40,7 @@ export interface Member {
     username : string;
     email : string;
     production_line : string;
-    image : string;
+    picture : string;
     
     isActive : boolean;
 }

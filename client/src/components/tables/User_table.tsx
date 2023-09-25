@@ -31,11 +31,11 @@ const User_table = () => {
               {data?.map(member =>(
                <tr>
               <td  >
-                          <img src={member.image} alt="user icon"  style={{width : '40px' , height: '40px' , borderRadius : '50px'}} />
+                          <img  src={`http://127.0.0.1:3333/api/images/${member.picture}`} alt="user icon"  style={{width : '40px' , height: '40px' , borderRadius : '50px'}} />
             </td>
             <td> {member.email} </td>
             <td>
-               {member.production_line}
+               {member.productionLine}
            </td>
            <td> <Box h={"13px"}
             w={"13px"}

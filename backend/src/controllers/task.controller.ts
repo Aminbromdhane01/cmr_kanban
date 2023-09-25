@@ -37,7 +37,7 @@ export const TaskController = {
        }
        let data : Task = req.body
        data.authorId = req.user?.id as number
-       data.projectId = 3
+       
        console.log(data);
        
        try {
@@ -82,7 +82,7 @@ export const TaskController = {
     async delete(req : Request, res : Response)
     {
       const  id = parseInt( req.params.id)
-      const user_id = parseInt(req.params.userid);
+      
       try {
          const target = await prisma.task.findUnique({where : { id: id}})
          if (!target) {
@@ -97,7 +97,7 @@ export const TaskController = {
                  category : target.category,
                  stage : target.stage,
                  orderdate :target.orderdate,
-                 authorId :user_id
+                 authorId :req.user?.id as number
                  
                  
                },
@@ -122,7 +122,6 @@ export const TaskController = {
 async update(req : Request, res : Response){
    
   const id = parseInt( req.params.id) ;
-  const user_id = parseInt(req.params.userid);
   let data = req.body
   try {
    const target = await prisma.task.findUnique({where : { id: id}})
@@ -140,7 +139,8 @@ async update(req : Request, res : Response){
           category : target.category,
           stage : target.stage,
           orderdate :target.orderdate,
-          authorId :user_id
+          authorId :req.user?.id as number
+          
 
          }
       })

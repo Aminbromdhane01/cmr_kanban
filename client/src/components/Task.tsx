@@ -11,6 +11,9 @@ import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom'
 import axios from "axios";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { axiosInstance, setAuthToken } from "../config/axiosConfig";
+import useUserById from "../hooks/getUserbyId";
+import useFetch from "../hooks/useFetch";
 
 
 type TaskProps = {
@@ -19,14 +22,19 @@ type TaskProps = {
     content : string ,
     category : string ,
     color : string ,
+    authorId : number
     
 }
 
-function Task({ index , task , content , color , category} : TaskProps ) { 
+function Task({ index , task , content , color , category , authorId} : TaskProps ) { 
 
   const  { isOpen, onOpen, onClose } = useDisclosure()
   const  { isOpen : isOpenModel , onOpen : onOpenModel, onClose : onCloseModel} = useDisclosure()
   const  { isOpen : isOpenUpdate , onOpen : onOpenUpdate, onClose : onCloseUpdate} = useDisclosure()
+ 
+
+  
+
   const cancelRef = React.useRef<HTMLInputElement>(null)  
   const {
     register,
@@ -35,9 +43,12 @@ function Task({ index , task , content , color , category} : TaskProps ) {
     reset,
  
   } = useForm()
-  const Updatetask = async (id : string , userid : string , data : any) => {
+  const Updatetask = async (id : string , data : any) => {
+
+      const token = localStorage.getItem('token')
+      setAuthToken(token)
     try {
-      const response = await axios.patch('http://127.0.0.1:3333/api/tasks/update/'+id+'/'+userid , data)
+      const response = await axiosInstance.patch('http://127.0.0.1:3333/api/tasks/update/'+id , data)
       console.log(response);
       
     } catch (error) {
@@ -62,7 +73,7 @@ function Task({ index , task , content , color , category} : TaskProps ) {
       const date = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
       formdata.enddate = date }
       
-      Updatetask(index.toString(), userid.toString() , formdata)    
+      Updatetask(index.toString(),  formdata)    
       reset();  
       window.location.reload();
           
@@ -81,11 +92,14 @@ function Task({ index , task , content , color , category} : TaskProps ) {
   const {ref , isDragging} = useTaskDragAndDrop<HTMLDivElement>({
     task , index }
   );
-  const userid = 20
-  const deletetask = async (id : string , userid : string) =>{
+  
+  const deletetask = async (id : string ) =>{
+    const token = localStorage.getItem('token')
+    setAuthToken(token)
     try {
-      const response = await axios.delete('http://127.0.0.1:3333/api/tasks/delete/'+id+'/'+userid)
+      const response = await axiosInstance.delete('http://127.0.0.1:3333/api/tasks/delete/'+id)
       console.log(response);
+      window.location.reload();
       
     } catch (error) {
       console.log(error);
@@ -192,10 +206,10 @@ function Task({ index , task , content , color , category} : TaskProps ) {
     
     />
 
-<Stack direction="row" position={"absolute"} bottom={1} left={4}><Avatar size='xs' name='Kent Dodds' src='https://bit.ly/kent-c-dodds' onClick={onOpenModel}/>
+<Stack direction="row" position={"absolute"} bottom={1} left={4}><Avatar size='xs' name='Kent Dodds' src={`http://127.0.0.1:3333/api/images/${useUserById(authorId)?.picture}`} onClick={onOpenModel}/>
 <Heading fontWeight={"semibold"} size={"xs"} pt={1}
 
->Name</Heading>
+>{useUserById(authorId)?.username}</Heading>
 </Stack>
 <AlertDialog
         isOpen={isOpen}
@@ -219,8 +233,7 @@ function Task({ index , task , content , color , category} : TaskProps ) {
               <Button colorScheme='red' onClick={() => 
               {
                 onClose;
-                deletetask(index.toString() , userid.toString())
-                window.location.reload();
+                deletetask(index.toString() )
               }} ml={3} >
                 Delete
               </Button>
@@ -234,7 +247,7 @@ function Task({ index , task , content , color , category} : TaskProps ) {
           <ModalHeader>Profile Details</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Profiledetails username="Name" email="Name@gmail.com" image="https://bit.ly/kent-c-dodds" />
+            <Profiledetails username={useUserById(authorId)?.username as string} email={useUserById(authorId)?.email as string}  image={`http://127.0.0.1:3333/api/images/${useUserById(authorId)?.picture}`} />
           </ModalBody>
 
           <ModalFooter>
@@ -274,6 +287,7 @@ function Task({ index , task , content , color , category} : TaskProps ) {
                 
               </Select>
             </FormControl>
+          
             <FormControl>
               <FormLabel>End Date</FormLabel>
               <Input type="date" {...register('enddate')} />

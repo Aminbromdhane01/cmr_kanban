@@ -15,9 +15,10 @@ import {
   useDisclosure,
   useColorModeValue,
   Stack,
+  LinkBox,
 } from '@chakra-ui/react'
 import { HamburgerIcon, CloseIcon, AddIcon } from '@chakra-ui/icons'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import decodeToken from '../../utils/decodeToken'
 import useUserById from '../../hooks/getUserbyId'
 
@@ -48,6 +49,13 @@ const NavLink = (props: Props) => {
 export default function Topbar() {
   const { isOpen, onOpen, onClose } = useDisclosure()
    const token : any = decodeToken()  
+   const navigate = useNavigate()
+   const logout = () =>{
+       navigate('/login')
+       
+       localStorage.removeItem('token')
+       
+   }
   
   
    
@@ -68,21 +76,23 @@ export default function Topbar() {
             <HStack as={'nav'} spacing={4} display={{ base: 'none', md: 'flex' }}>
              
                 <Link to={'/admin'}  ><NavLink    ><span style={{fontSize :'20px' , fontFamily :'inherit'}}>Admin</span></NavLink></Link>
-                <Link to={'/dashboard/all'}  ><span style={{fontSize :'20px' , fontFamily :'inherit'}} ><NavLink   >Kanban Board</NavLink></span></Link>
+                <Link to={'/dashboard'}  ><span style={{fontSize :'20px' , fontFamily :'inherit'}} ><NavLink   >Kanban Board</NavLink></span></Link>
              
             </HStack>
           </HStack>
           <Flex alignItems={'center'}>
+            <Link to={'/project'}>
             <Button
               variant={'solid'}
               colorScheme={'teal'}
               size={'sm'}
               mr={4}
               leftIcon={<AddIcon />}>
-              Action
+              Create Project
             </Button>
+            </Link>
             <Menu>
-              <span>{useUserById(token.id)?.username}</span>
+           
               <MenuButton
                 as={Button}
                 rounded={'full'}
@@ -91,16 +101,15 @@ export default function Topbar() {
                 minW={0}>
                 <Avatar
                   size={'sm'}
-                  src={
-                    'https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9'
-                  }
+                  src={`http://127.0.0.1:3333/api/images/${useUserById(token.id)?.picture}`}
+                    
+                  
                 />
               </MenuButton>
               <MenuList>
                 <Link to={'/archive'}><MenuItem>Archive</MenuItem></Link>
-                <MenuItem>Logout</MenuItem>
-                <MenuDivider />
-                <MenuItem>Link 3</MenuItem>
+                <MenuItem onClick={logout}>Logout</MenuItem>
+               
               </MenuList>
             </Menu>
           </Flex>

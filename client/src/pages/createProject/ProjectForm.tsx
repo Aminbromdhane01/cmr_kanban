@@ -1,4 +1,4 @@
-import { FormLabel , FormControl, Input, Stack, Flex, useColorModeValue, Box, Heading,  Button  } from '@chakra-ui/react'
+import { FormLabel , FormControl, Input, Stack, Flex, useColorModeValue, Box, Heading,  Button, Toast, useToast  } from '@chakra-ui/react'
 import axios from 'axios'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
@@ -6,6 +6,7 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 
 
 const ProjectForm = () => {
+  const toast = useToast()
     const {
         register,
         handleSubmit,
@@ -20,8 +21,18 @@ const ProjectForm = () => {
           
         try {
             const response = await axios.post('http://127.0.0.1:3333/api/projects/create', data)
-            console.log(response);
-            reset()
+            if (response.status ===201)
+            {
+              toast({
+                title: 'Project created.',
+               
+                status: 'success',
+                duration: 9000,
+                isClosable: true,
+              })
+              reset()
+            }
+           
             
             
         } catch (error) {
